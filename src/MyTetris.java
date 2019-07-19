@@ -22,7 +22,7 @@ public class MyTetris extends JLabel implements Runnable{
 	public static final int SQ_COLS = 10;  //10조각의 열
 	public static final int SQ_RAWS = 20;  //20조각의 행
 	public static final int SQ_SIZE = 25;  // 한 조각의 사이즈
-	
+	public static final int NE_SIZE = 15;  //NEXT 한조각 사이즈
 	
 	public static final int START_X = 4;
 	public static final int START_Y = -1;
@@ -46,7 +46,6 @@ public class MyTetris extends JLabel implements Runnable{
 	
 	JLabel score; 
 	JLabel line; 
-	JLabel next;
 	JLabel username;
 	JLabel Jlevel;
 	public MyTetris(String name) {
@@ -64,13 +63,6 @@ public class MyTetris extends JLabel implements Runnable{
 		Jlevel.setBorder(BorderFactory.createLineBorder(Color.black,3));
 		Jlevel.setHorizontalAlignment(JLabel.CENTER);
 		Jlevel.setBounds(5, 68, 117, 77);
-		
-		
-		next = new JLabel("NEXT");
-		next.setFont(new Font("serif", Font.BOLD, 20));
-		next.setBorder(BorderFactory.createLineBorder(Color.black,3));
-		next.setBounds(126,68,117,77);
-		
 		
 		username = new JLabel(name);
 		username.setFont(new Font("serif", Font.BOLD, 20));
@@ -93,7 +85,6 @@ public class MyTetris extends JLabel implements Runnable{
 		setLayout(null);
 		add(score);
 		add(Jlevel);
-		add(next);
 		add(username);
 	}
 	
@@ -277,6 +268,7 @@ public class MyTetris extends JLabel implements Runnable{
 		removeRows();
 		newBlock();
 	}
+	
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -329,6 +321,19 @@ public class MyTetris extends JLabel implements Runnable{
 			g.drawRect(X*SQ_SIZE, 150+Y*SQ_SIZE, SQ_SIZE, SQ_SIZE);
 		}
 		
+		/* NEXT 그리기 */
+		Color tmp = Block.color[ nextBlocks.get(0)];
+		g.setColor( Color.black );
+		g.fillRect(126,68,117,77);
+		
+		for(Point pt : Block.form[nextBlocks.get(0)][0]) {
+			g.setColor(tmp);
+			g.fillRect( 160+pt.x*NE_SIZE,90+ pt.y*NE_SIZE, NE_SIZE, NE_SIZE);
+			g.setColor(Color.white);
+			g.drawRect( 160+pt.x*NE_SIZE,90+ pt.y*NE_SIZE, NE_SIZE, NE_SIZE);
+		}
+		
+		
 		
 	}
 
@@ -365,6 +370,8 @@ public class MyTetris extends JLabel implements Runnable{
 					if(speed <= 200) {
 						if(speed <=100) {
 							speed -= 5;
+							if(speed<0)
+								return;
 						}else {
 							speed -= 30;
 						}
@@ -434,6 +441,8 @@ public class MyTetris extends JLabel implements Runnable{
 		frame.add(player1);
 		frame.add(vs);
 		frame.add(player2);
+		
+		
 		
 		
 		frame.setResizable(false);
